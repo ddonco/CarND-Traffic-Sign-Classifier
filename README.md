@@ -31,11 +31,11 @@ The steps taken to build the classifier are the following:
 
 The image dataset used for training a road sign classifier is the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). This dataset is made of 34,799 training samples and 12,630 testing samples of 43 different traffic sign classes. The images are color images with a 32 px wide by 32 px tall shape. Below is an array of sample images from the training set for us to see the different traffic signs in the data.
 
-[image1]
+![alt text][image1]
 
 Looking further into the dataset, we can observe the balance of classes by plotting the sample count of each class, as seen below. Its clear that the dataset contains significantly more samples of classes 1 through 13 (excluding class 6) than most other classes. We can conclude that the dataset is not well balanced, which may lead to training issues. A deep learning model trained on an imbalanced dataset may develop a poor ability to correctly classify certain samples if these samples are relatively sparse in the training data.
 
-[image2]
+![alt text][image2]
 
 I've chosen to generate new training samples for the sparse classes by employing image augmentation. I'm considering any class with fewer than 500 samples to be sparse. I have chosen to use three image augmentation techniques to alter existing samples thereby creating new images for training. These augmentation techniques are zoom, zooming in on an image, rotation, rotating the image clockwise or counter clockwise, and translation, shifting the image left, right, up, or down. These three augmentation are applied to the sparse class images in a sequential manner and applied at a random magnitude.
 
@@ -43,11 +43,11 @@ To illustrate the sequential manner of image augmentation: `image --> zoom() -->
 
 Below are several examples of augmented images could exist in the new, enlarged training dataset. 
 
-[image3]
+![alt text][image3]
 
 Now that the minimum number of images in each class is 500, and the total number of training samples is 45,299. The only preprocessing step applied to all images is normalization. I've chosen to keep the color channels of the images because they contain additional information that the convnet can learn to help improve classification accuracy. To normalize images with the (R, G, B) color channels I found the mean and standard deviation of of each channel across the dataset, then normalized each channel independently using the following calculation: `norm = (x - mean)/std_dev`, where `x` is a pixel value in one of the three color channels and `mean` and `std_dev` are the mean and standard deviation of that color channel. The final distribution of classes is shown below.
 
-[image4]
+![alt text][image4]
 
 #### 2. ConvNet Model
 
@@ -72,13 +72,12 @@ The architecture of my LeNet2 model is as follows:
 | Dropout       		| 75% keep rate 								|
 | Fully connected		| 43 nodes  									|
 | Softmax				|												|
-|						|												|
 
 #### 3. Model Training
 
 Model training was performed using the cross entropy loss function and the Adam optimizer. The model was trained over a course of 50 epochs with a batch size of 128 images. The learning rate of the Adam optimizer was set to 0.001. Logging the training set accuracy and validation set accuracy during during training produces the following accuracy plot. We can see that the model quickly reaches training and validation accuracies greater than 0.90. After 40 epochs the model achieves a training accuracy of 0.996 and a validation accuracy of 0.948.
 
-[image5]
+![alt text][image5]
 
 The resulting model from this training routine achieved a test set score of 0.929. During the training phase of this project, model architecture was the focus of my experimentation. Some experiments included adding another convolutional layer between the first layer and the following pooling layer to further increase the number of feature maps in the model. I also experimented with increasing the number of nodes in the fully connected layers. I found that neither of these changes significantly improved my model over my current LeNet2 design.
 
@@ -86,13 +85,13 @@ The resulting model from this training routine achieved a test set score of 0.92
 
 The final step in this project was to test the model on hand selected traffic sign images from the web. The only criteria used when searching to test images were, images of sign classes that exist in the training data and images that are relatively square. The test images would have to be resized to 32x32, so rectangular images would be skewed. Below are 7 images found from a google search. I suspect these images will be mostly easy for the model to correctly classify because the sign is centered in most images and takes up most of the frame.
 
-[image6]
+![alt text][image6]
 
 The overall accuracy of the model on the new test images was lower than expected with an accuracy of 0.86. In other words, 6 of 7 classes were predicted correctly. The model predictions are listed in the table below:
 
 | Image			        |     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| **50 KPH Speed Limit	| 30 KPH Speed Limit**							| 
+| **50 KPH Speed Limit**	| **30 KPH Speed Limit**							| 
 | Priority Road 		| Priority Road 								|
 | Roundabout			| Yield											|
 | Bumpy Road     		| Bumpy Road					 				|
@@ -102,4 +101,4 @@ The overall accuracy of the model on the new test images was lower than expected
 
 We can look closer into these predictions by examining the top 5 softmax probabilities for each image. The below graphic shows each input image and an adjacent histogram showing the softmax probabilities. We can see that the model predicts the class for 6 of the 7 images with 100% probability, even for the incorrectly classified image. The model was the least certian for the No Entry sign image where it returned an 80% probability for the No Entry class and a 20% probability for the Priority Road class. I'm surprised that the incorrectly classified speed limit sign didn't produce a distribution of probabilities for the first few speed limit sign classes. This leads me to think that the model hasn't thoroughly learned some of the distinguishing features for different speed limit signs.
 
-[image7]
+![alt text][image7]
